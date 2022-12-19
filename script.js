@@ -5,19 +5,22 @@ class Position{
     }
 }
 
-var canvasSize = 15;
+var canvasSize = 19;
 var canvasDOM = document.getElementById("canvas");
 var canvas = new Array(canvasSize); //initialize matrix
 
-//GAME SETTINGS
+//GAME STARTING SETTINGS
 var posHistory = [];
-posHistory[0] = new Position( //start pos
+posHistory[0] = new Position( //starting pos
     Math.round(canvas.length/2)-1,
     Math.round(canvas.length/2)-1
 )
-var snakeSize = 3; //snake starting size
-var snakeDir = 2; //snake starting direction
-
+var snakeSize = 3; 
+var snakeDir = 2; 
+var snakeColor = "#31e981";
+var canvasColor = "#002A32"//"#212529" //"#00120B"//
+var gameSpeed = 90;
+//
 
 //keyboard input
 document.addEventListener("keydown",(event)=>{
@@ -38,6 +41,7 @@ document.addEventListener("keydown",(event)=>{
 
 //START
 createCanvas();
+resetCanvas();
 //
 
 //GAME LOOP
@@ -45,7 +49,7 @@ var loop = function() {
     setTimeout(function(){
         Update();
         window.requestAnimationFrame(loop);
-    }, 100)
+    }, gameSpeed)
 };
 window.requestAnimationFrame(loop);
 //
@@ -69,13 +73,21 @@ function createCanvas() {
             
             canvas[j][i] = document.createElement("div");
             canvas[j][i].className = "square";
-            canvas[j][i].style.backgroundColor = "#212529"
+            canvas[j][i].style.backgroundColor = canvasColor;
             
             row.appendChild(col);
             col.appendChild(canvas[j][i]);
         }
     }
     return;
+}
+
+function resetCanvas(){
+    for(let i = 0; i<canvasSize; i++){
+        for(let j = 0; j<canvasSize; j++){
+            placeInCanvas(new Position(i,j), canvasColor);
+        }
+    }
 }
 
 function placeInCanvas({X,Y}, color){
@@ -94,13 +106,13 @@ function Update(){
 
     function clearSnakePath() {
         if (posHistory[snakeSize] != undefined) {
-            placeInCanvas(posHistory[snakeSize], "#212529");
+            placeInCanvas(posHistory[snakeSize], canvasColor);
         }
     }
 
     function drawSnakeBody() {
         for (let i = 0; i < posHistory.length - 1; i++) {
-            placeInCanvas(posHistory[i], "green");
+            placeInCanvas(posHistory[i], snakeColor);
         }
     }
 
@@ -153,3 +165,4 @@ function Update(){
         }
     }
 }
+
