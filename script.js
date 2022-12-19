@@ -14,7 +14,14 @@ posHistory[0] = new Position(
     Math.round(canvas.length/2)-1
 )
 
-var snakeSize = 1;
+var snakeSize = 10;
+var snakeDir = 2;
+
+/*
+ 0
+3 1
+ 2
+*/
 
 //START
 createCanvas();
@@ -44,7 +51,7 @@ function createCanvas() {
 
         for (let i = 0; i < 15; i++) {
             let col = document.createElement("div");
-            col.className = "p-0 col  border-warning";
+            col.className = "p-0 col border-warning";
             
             canvas[j][i] = document.createElement("div");
             canvas[j][i].className = "square";
@@ -66,15 +73,9 @@ function Update(){
     console.log("snake moving");
 
     //clears snake path
-    /*
-    if(posHistory[posHistory.length-1] != undefined){
-        placeInCanvas(posHistory[posHistory.length-1], "#212529")
-    }*/
-
     if(posHistory[snakeSize] != undefined){
         placeInCanvas(posHistory[snakeSize], "#212529");
     }
-    
     
     //draws snake body
     for(let i = 0; i<posHistory.length-1; i++){
@@ -88,11 +89,27 @@ function Update(){
         }
     }
     
-    //posHistory[1] = new Position(posHistory[0].X, posHistory[0].Y);
-    posHistory[0].X++;
-    
+    //change snake direction
+    switch (snakeDir) {
+        case 0:
+            posHistory[0].X--;
+            break;
+        case 1:
+            posHistory[0].Y++;
+            break;
+        case 2:
+            posHistory[0].X++;
+            break;
+        case 3:
+            posHistory[0].Y--;
+            break;
+        default:
+            break;
+    }
+
     //prints position history
+    /*
     for(let i = 0; i<posHistory.length; i++){
         console.log(`[${i}]: `+posHistory[i].X);
-    }
+    }*/
 }
