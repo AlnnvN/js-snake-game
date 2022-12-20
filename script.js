@@ -28,10 +28,10 @@ var Snake = {
     )]
 }
 
-//GAME STARTING SETTINGS
-var gameSpeed = 90;
-//
-
+var Game = {
+    speed: 90,
+    isPlaying: true
+}
 
 //keyboard input
 document.addEventListener("keydown",(event)=>{
@@ -48,24 +48,29 @@ document.addEventListener("keydown",(event)=>{
         Snake.direction = 3;
     }
 }) 
-//
 
-//START
-createCanvas();
-resetCanvas();
-//
-
-//GAME LOOP
-var loop = function() {
-    setTimeout(function(){
-        Update();
-        window.requestAnimationFrame(loop);
-    }, gameSpeed)
-};
-window.requestAnimationFrame(loop);
-//
+Play();
 
 //FUNCTIONS
+function Play() {
+    //START
+    createCanvas();
+    resetGame();
+
+    //GAME LOOP
+    var loop = function () {
+        if (!Game.isPlaying) {
+            return;
+        }
+        setTimeout(function () {
+            Update();
+            window.requestAnimationFrame(loop);
+        }, Game.speed);
+
+    };
+    window.requestAnimationFrame(loop);
+}
+
 function createCanvas() {
     
     for(let i = 0; i<Canvas.size; i++){
@@ -222,5 +227,17 @@ function Update(){
         
         return isHitting;
     }
+}
+
+function resetGame(){
+    resetCanvas();
+    Fruit.position = new Position;
+    Fruit.isPlaced = false;
+    Snake.posHistory = [new Position( 
+        Math.round(Canvas.size/2)-1,
+        Math.round(Canvas.size/2)-1
+    )]
+    Snake.size = 3;
+    Snake.direction = 2;
 }
 
