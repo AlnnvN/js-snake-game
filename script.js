@@ -20,6 +20,7 @@ var Canvas = {
 
 var Snake = {
     color: "#31e981",
+    deathColor: "#0b783a",
     direction: 2,
     size: 3,
     posHistory: [new Position( 
@@ -30,30 +31,30 @@ var Snake = {
 
 var Game = {
     speed: 90,
-    isPlaying: true
+    isPlaying: true,
+    isDirChanging: false
 }
-var dirChanging;
 
 //keyboard input
 document.addEventListener("keydown",(event)=>{
     
 
-    if(dirChanging === false){
+    if(Game.isDirChanging === false){
         if(event.code == "ArrowUp" && Snake.direction != 2){
             Snake.direction = 0;
-            dirChanging = true;
+            Game.isDirChanging = true;
         }
         else if(event.code == "ArrowRight"  && Snake.direction != 3){
             Snake.direction = 1;
-            dirChanging = true;
+            Game.isDirChanging = true;
         }
         else if(event.code == "ArrowDown"  && Snake.direction != 0){
             Snake.direction = 2;
-            dirChanging = true;
+            Game.isDirChanging = true;
         }
         else if(event.code == "ArrowLeft"  && Snake.direction != 1){
             Snake.direction = 3;
-            dirChanging = true;
+            Game.isDirChanging = true;
         }
     }
 }) 
@@ -122,7 +123,8 @@ function placeInCanvas({X,Y}, color){
 
 function Update(){
 
-    checksIfFruitHasBeenEaten();
+    
+    hasEatFruit();
 
     if(Fruit.isPlaced == false){
         createFruit();
@@ -134,19 +136,28 @@ function Update(){
     updatePosHistory();
     changeDirection();
     canvasLimitTreatment();
-    function checksIfFruitHasBeenEaten() {
+    hasHitBody();
+
+    function hasHitBody(){
+        if(isHittingSnakeBody(Snake.posHistory[0])){
+            endGame();
+            return;
+        }
+    }
+
+    function hasEatFruit() {
         if (Fruit.position.X === Snake.posHistory[0].X
             && Fruit.position.Y === Snake.posHistory[0].Y){
             
             Snake.size = Snake.size + 1;
-            Game.speed--;
-
+            if(Game.speed>40){
+                Game.speed--;
+            }
+            
             Fruit.isPlaced = false;
             Fruit.position = new Position;
         }
     }
-
-    //printPosHistory();
 
     function clearSnakePath() {
         if (Snake.posHistory[Snake.size] != undefined) {
@@ -173,19 +184,19 @@ function Update(){
         switch (Snake.direction) {
             case 0:
                 Snake.posHistory[0].X--;
-                dirChanging = false;
+                Game.isDirChanging = false;
                 break;
             case 1:
                 Snake.posHistory[0].Y++;
-                dirChanging = false;
+                Game.isDirChanging = false;
                 break;
             case 2:
                 Snake.posHistory[0].X++;
-                dirChanging = false;
+                Game.isDirChanging = false;
                 break;
             case 3:
                 Snake.posHistory[0].Y--;
-                dirChanging = false;
+                Game.isDirChanging = false;
                 break;
             default:
                 break;
@@ -247,11 +258,19 @@ function Update(){
         
         return isHitting;
     }
+
+    function endGame(){
+        for (let i = 1; i < Snake.posHistory.length; i++) {
+            setTimeout(function(){
+                placeInCanvas(Snake.posHistory[i], Snake.deathColor);
+            },90*i)
+        }
+        Game.isPlaying = false;
+    }
 }
 
 function resetGame(){
     resetCanvas();
-    dirChanging = false;
     Fruit.position = new Position;
     Fruit.isPlaced = false;
     Snake.posHistory = [new Position( 
