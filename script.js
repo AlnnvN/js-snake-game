@@ -13,7 +13,7 @@ var Fruit = {
 
 var Canvas = {
     color: "#002A32"/*"#212529""#00120B"*/,
-    size: 19,
+    size: 15,
     DOM: document.getElementById("canvas"),
     array: new Array(this.size)
 }
@@ -30,7 +30,7 @@ var Snake = {
 }
 
 var Game = {
-    speed: 90,
+    speed: 120,
     isPlaying: true,
     isDirChanging: false
 }
