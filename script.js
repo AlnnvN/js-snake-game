@@ -5,36 +5,47 @@ class Position{
     }
 }
 
-var canvasSize = 19;
-var canvasDOM = document.getElementById("canvas");
-var canvas = new Array(canvasSize); //initialize matrix
+var Fruit = {
+    color: "#F02D3A",
+    isPlaced: false,
+    position: new Position
+}
+
+var Canvas = {
+    color: "#002A32"/*"#212529""#00120B"*/,
+    size: 19,
+    DOM: document.getElementById("canvas"),
+    array: new Array(this.size)
+}
+
+var Snake = {
+    color: "#31e981",
+    direction: 2,
+    size: 3,
+    posHistory: [new Position( 
+    Math.round(Canvas.size/2)-1,
+    Math.round(Canvas.size/2)-1
+    )]
+}
 
 //GAME STARTING SETTINGS
-var posHistory = [];
-posHistory[0] = new Position( //starting pos
-    Math.round(canvas.length/2)-1,
-    Math.round(canvas.length/2)-1
-)
-var snakeSize = 3; 
-var snakeDir = 2; 
-var snakeColor = "#31e981";
-var canvasColor = "#002A32"//"#212529" //"#00120B"//
 var gameSpeed = 90;
 //
 
+
 //keyboard input
 document.addEventListener("keydown",(event)=>{
-    if(event.code == "ArrowUp" && snakeDir != 2){
-        snakeDir = 0;
+    if(event.code == "ArrowUp" && Snake.direction != 2){
+        Snake.direction = 0;
     }
-    else if(event.code == "ArrowRight"  && snakeDir != 3){
-        snakeDir = 1;
+    else if(event.code == "ArrowRight"  && Snake.direction != 3){
+        Snake.direction = 1;
     }
-    else if(event.code == "ArrowDown"  && snakeDir != 0){
-        snakeDir = 2;
+    else if(event.code == "ArrowDown"  && Snake.direction != 0){
+        Snake.direction = 2;
     }
-    else if(event.code == "ArrowLeft"  && snakeDir != 1){
-        snakeDir = 3;
+    else if(event.code == "ArrowLeft"  && Snake.direction != 1){
+        Snake.direction = 3;
     }
 }) 
 //
@@ -57,87 +68,100 @@ window.requestAnimationFrame(loop);
 //FUNCTIONS
 function createCanvas() {
     
-    for(let i = 0; i<canvasSize; i++){
-        canvas[i] = new Array(canvasSize);
+    for(let i = 0; i<Canvas.size; i++){
+        Canvas.array[i] = new Array(Canvas.size);
     }
 
-    for (let j = 0; j < canvasSize; j++) {
+    for (let j = 0; j < Canvas.size; j++) {
         var row = document.createElement("div");
         row.className = "row flex-nowrap";
 
-        canvasDOM.appendChild(row);
+        Canvas.DOM.appendChild(row);
 
-        for (let i = 0; i < canvasSize; i++) {
+        for (let i = 0; i < Canvas.size; i++) {
             let col = document.createElement("div");
             col.className = "p-0 col border-warning";
             
-            canvas[j][i] = document.createElement("div");
-            canvas[j][i].className = "square";
-            canvas[j][i].style.backgroundColor = canvasColor;
+            Canvas.array[j][i] = document.createElement("div");
+            Canvas.array[j][i].className = "square";
+            Canvas.array[j][i].style.backgroundColor = Canvas.color;
             
             row.appendChild(col);
-            col.appendChild(canvas[j][i]);
+            col.appendChild(Canvas.array[j][i]);
         }
     }
     return;
 }
 
 function resetCanvas(){
-    for(let i = 0; i<canvasSize; i++){
-        for(let j = 0; j<canvasSize; j++){
-            placeInCanvas(new Position(i,j), canvasColor);
+    for(let i = 0; i<Canvas.size; i++){
+        for(let j = 0; j<Canvas.size; j++){
+            placeInCanvas(new Position(i,j), Canvas.color);
         }
     }
 }
 
 function placeInCanvas({X,Y}, color){
-    canvas[X][Y].style.backgroundColor = color;
+    Canvas.array[X][Y].style.backgroundColor = color;
     return;
 }
 
 function Update(){
-    console.log("snake moving");
 
+    if(Fruit.position.X === Snake.posHistory[0].X 
+        && Fruit.position.Y === Snake.posHistory[0].Y){
+        console.log("fruit eaten");
+        Snake.size = Snake.size + 1;
+        Fruit.isPlaced = false;
+        Fruit.position = new Position;
+    }
+
+    if(Fruit.isPlaced == false){
+        createFruit();
+    }
+
+    placeFruit();
     clearSnakePath();
     drawSnakeBody();
     updatePosHistory();
     changeDirection();
     canvasLimitTreatment();
+    //printPosHistory();
 
     function clearSnakePath() {
-        if (posHistory[snakeSize] != undefined) {
-            placeInCanvas(posHistory[snakeSize], canvasColor);
+        if (Snake.posHistory[Snake.size] != undefined) {
+            placeInCanvas(Snake.posHistory[Snake.size], Canvas.color);
         }
     }
 
     function drawSnakeBody() {
-        for (let i = 0; i < posHistory.length - 1; i++) {
-            placeInCanvas(posHistory[i], snakeColor);
+        for (let i = 0; i < Snake.posHistory.length - 1; i++) {
+            placeInCanvas(Snake.posHistory[i], Snake.color);
         }
     }
 
     function updatePosHistory() {
         //move history back in the array
-        for (let i = snakeSize; i >= 1; i--) {
-            if (posHistory[i - 1] != undefined) {
-                posHistory[i] = new Position(posHistory[i - 1].X, posHistory[i - 1].Y);
+        for (let i = Snake.size; i >= 1; i--) {
+            if (Snake.posHistory[i - 1] != undefined) {
+                Snake.posHistory[i] = new Position(Snake.posHistory[i - 1].X, Snake.posHistory[i - 1].Y);
             }
         }
     }
 
     function changeDirection() {
-        switch (snakeDir) {
+        switch (Snake.direction) {
             case 0:
-                posHistory[0].X--;
+                Snake.posHistory[0].X--;
                 break;
             case 1:
-                posHistory[0].Y++;
+                Snake.posHistory[0].Y++;
                 break;
             case 2:
-                posHistory[0].X++;
+                Snake.posHistory[0].X++;
                 break;
             case 3:
-                posHistory[0].Y--;
+                Snake.posHistory[0].Y--;
                 break;
             default:
                 break;
@@ -145,24 +169,58 @@ function Update(){
     }
 
     function canvasLimitTreatment() {
-        if (posHistory[0].X > canvasSize - 1) {
-            posHistory[0].X = 0;
+        if (Snake.posHistory[0].X > Canvas.size - 1) {
+            Snake.posHistory[0].X = 0;
         }
-        if (posHistory[0].X < 0) {
-            posHistory[0].X = canvasSize - 1;
+        if (Snake.posHistory[0].X < 0) {
+            Snake.posHistory[0].X = Canvas.size - 1;
         }
-        if (posHistory[0].Y > canvasSize - 1) {
-            posHistory[0].Y = 0;
+        if (Snake.posHistory[0].Y > Canvas.size - 1) {
+            Snake.posHistory[0].Y = 0;
         }
-        if (posHistory[0].Y < 0) {
-            posHistory[0].Y = canvasSize - 1;
+        if (Snake.posHistory[0].Y < 0) {
+            Snake.posHistory[0].Y = Canvas.size - 1;
         }
     }
 
     function printPosHistory() {
-        for (let i = 0; i < posHistory.length; i++) {
-            console.log(`[${i}]: ` + posHistory[i].X);
+        for (let i = 0; i < Snake.posHistory.length; i++) {
+            console.log(`[${i}]: ` + Snake.posHistory[i].X);
         }
+    }
+
+    function createFruit(){
+        let pos = new Position(Math.floor(Math.random()*Canvas.size),
+        Math.floor(Math.random()*Canvas.size));
+
+        if(isHittingSnakeBody(pos) === false){
+            Fruit.position = pos;
+        }
+        else{
+            createFruit();
+        }
+        return;
+    }
+
+    function placeFruit(){
+        placeInCanvas(Fruit.position,Fruit.color);
+        Fruit.isPlaced = true;
+        console.log("placing fruit at "+Fruit.position.X+","+Fruit.position.Y);
+    }
+
+    function isHittingSnakeBody(objPos){
+        let isHitting = false;
+        
+        if(Snake.posHistory[1] != undefined){
+            for(let i = 1; i<Snake.size-1; i++){
+                if(objPos.X == Snake.posHistory[i].X && objPos.Y == Snake.posHistory[i].Y){
+                    isHitting = true;
+                    console.log("SNAKE BODY HIT");
+                }
+            }
+        }
+        
+        return isHitting;
     }
 }
 
