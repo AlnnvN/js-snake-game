@@ -59,6 +59,7 @@ document.addEventListener("keydown",(event)=>{
     }
 }) 
 
+
 Play();
 
 //FUNCTIONS
@@ -105,6 +106,50 @@ function createCanvas() {
             col.appendChild(Canvas.array[j][i]);
         }
     }
+
+    //touch event listener
+    for(let i = 0; i<Canvas.size; i++){
+        for(let j = 0; j<Canvas.size; j++){
+            if(i!=j && i+j<Canvas.size-1){
+                if(i<j){ //top triangle
+                    Canvas.array[i][j].addEventListener('click',()=>{
+                        if(Game.isDirChanging === false && Snake.direction != 2){
+                            Snake.direction = 0;
+                            Game.isDirChanging = true;
+                        }
+                    });
+                }
+                if(i>j){ //left triangle
+                    Canvas.array[i][j].addEventListener('click',()=>{
+                        if(Game.isDirChanging === false && Snake.direction != 1){
+                            Snake.direction = 3;
+                            Game.isDirChanging = true;
+                        }
+                    });
+                }
+            }
+
+            if(i!=j && i+j>Canvas.size-1){
+                if(i<j){ //right rectangle
+                    Canvas.array[i][j].addEventListener('click',()=>{
+                        if(Game.isDirChanging === false && Snake.direction != 3){
+                            Snake.direction = 1;
+                            Game.isDirChanging = true;
+                        }
+                    });
+                }
+                if(i>j){ //bottom rectangle
+                    Canvas.array[i][j].addEventListener('click',()=>{
+                        if(Game.isDirChanging === false && Snake.direction != 0){
+                            Snake.direction = 2;
+                            Game.isDirChanging = true;
+                        }
+                    });
+                }
+            }
+        }
+    }
+    
     return;
 }
 
@@ -280,4 +325,3 @@ function resetGame(){
     Snake.size = 3;
     Snake.direction = 2;
 }
-
