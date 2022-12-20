@@ -32,20 +32,29 @@ var Game = {
     speed: 90,
     isPlaying: true
 }
+var dirChanging;
 
 //keyboard input
 document.addEventListener("keydown",(event)=>{
-    if(event.code == "ArrowUp" && Snake.direction != 2){
-        Snake.direction = 0;
-    }
-    else if(event.code == "ArrowRight"  && Snake.direction != 3){
-        Snake.direction = 1;
-    }
-    else if(event.code == "ArrowDown"  && Snake.direction != 0){
-        Snake.direction = 2;
-    }
-    else if(event.code == "ArrowLeft"  && Snake.direction != 1){
-        Snake.direction = 3;
+    
+
+    if(dirChanging === false){
+        if(event.code == "ArrowUp" && Snake.direction != 2){
+            Snake.direction = 0;
+            dirChanging = true;
+        }
+        else if(event.code == "ArrowRight"  && Snake.direction != 3){
+            Snake.direction = 1;
+            dirChanging = true;
+        }
+        else if(event.code == "ArrowDown"  && Snake.direction != 0){
+            Snake.direction = 2;
+            dirChanging = true;
+        }
+        else if(event.code == "ArrowLeft"  && Snake.direction != 1){
+            Snake.direction = 3;
+            dirChanging = true;
+        }
     }
 }) 
 
@@ -113,13 +122,7 @@ function placeInCanvas({X,Y}, color){
 
 function Update(){
 
-    if(Fruit.position.X === Snake.posHistory[0].X 
-        && Fruit.position.Y === Snake.posHistory[0].Y){
-        console.log("fruit eaten");
-        Snake.size = Snake.size + 1;
-        Fruit.isPlaced = false;
-        Fruit.position = new Position;
-    }
+    checksIfFruitHasBeenEaten();
 
     if(Fruit.isPlaced == false){
         createFruit();
@@ -131,6 +134,18 @@ function Update(){
     updatePosHistory();
     changeDirection();
     canvasLimitTreatment();
+    function checksIfFruitHasBeenEaten() {
+        if (Fruit.position.X === Snake.posHistory[0].X
+            && Fruit.position.Y === Snake.posHistory[0].Y){
+            
+            Snake.size = Snake.size + 1;
+            Game.speed--;
+
+            Fruit.isPlaced = false;
+            Fruit.position = new Position;
+        }
+    }
+
     //printPosHistory();
 
     function clearSnakePath() {
@@ -158,15 +173,19 @@ function Update(){
         switch (Snake.direction) {
             case 0:
                 Snake.posHistory[0].X--;
+                dirChanging = false;
                 break;
             case 1:
                 Snake.posHistory[0].Y++;
+                dirChanging = false;
                 break;
             case 2:
                 Snake.posHistory[0].X++;
+                dirChanging = false;
                 break;
             case 3:
                 Snake.posHistory[0].Y--;
+                dirChanging = false;
                 break;
             default:
                 break;
@@ -232,6 +251,7 @@ function Update(){
 
 function resetGame(){
     resetCanvas();
+    dirChanging = false;
     Fruit.position = new Position;
     Fruit.isPlaced = false;
     Snake.posHistory = [new Position( 
