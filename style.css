@@ -4,10 +4,6 @@
     padding-top: 100%; 
 }
 
-#canvas{
-    width: 45vw;
-}
-
 #title1{
     color:#31e981;
     font-weight: bold;
@@ -25,4 +21,23 @@
 
 body{
     background-color: #FEFAE0;
+}
+
+
+@media (min-width:480px) { 
+    #canvas{
+        width: 95vw;
+    }
+}
+
+@media (min-width:801px)  { 
+    #canvas{
+        width: 80vw;
+    } 
+}
+
+@media (min-width:1281px) { 
+    #canvas{
+        width: 45vw;
+    }
 }
