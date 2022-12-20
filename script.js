@@ -198,7 +198,9 @@ function Update(){
         let pos = new Position(Math.floor(Math.random()*Canvas.size),
         Math.floor(Math.random()*Canvas.size));
 
-        if(isHittingSnakeBody(pos) === false){
+        if(isHittingSnakeBody(pos) === false || (
+            Snake.posHistory[0].X === pos.X && Snake.posHistory[0].Y === pos.Y
+        )){
             Fruit.position = pos;
         }
         else{
@@ -210,7 +212,6 @@ function Update(){
     function placeFruit(){
         placeInCanvas(Fruit.position,Fruit.color);
         Fruit.isPlaced = true;
-        console.log("placing fruit at "+Fruit.position.X+","+Fruit.position.Y);
     }
 
     function isHittingSnakeBody(objPos){
