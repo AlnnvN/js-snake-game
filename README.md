@@ -11,4 +11,5 @@ To change the snake direction:
 
 ![image](https://user-images.githubusercontent.com/108158031/208581253-78181c74-a85e-4742-bdf3-89904c21391c.png)
 
-![image](https://user-images.githubusercontent.com/108158031/208581537-2ded54c3-b76f-463d-9db9-3a5bc43a9d65.png)
+![image](https://user-images.githubusercontent.com/108158031/209062082-f6fdfa58-fbf1-42e1-b7ba-1c28ee8d80a9.png)
+
