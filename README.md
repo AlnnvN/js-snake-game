@@ -1,5 +1,5 @@
 # snakegame
-https://alnnvn.github.io/snakegame/
+https://alnnvn.github.io/js-snake-game/
 
 Simple implementation of a Snake Game using JavaScript/Bootstrap.
 
